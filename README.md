@@ -1,0 +1,1 @@
+Self contained server for handling HTTP requests that work with the Raspberry Pi's GPIO pins.
