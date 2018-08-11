@@ -9,24 +9,43 @@ import (
 )
 
 func Parse() {
+	// Flag
+	var port string
 	app := cli.NewApp()
 	app.Name = "boom"
 	app.Usage = "make an explosive entrance"
 
+	// app.Flags = []cli.Flag {
+	// 	cli.StringFlag{
+	// 	  Name: "port, p",
+	// 	  Value: "8000",
+	// 	  Usage: "Set the port for the server to listen on.",
+	// 	  Destination: &port,
+	// 	},
+	// }
+
 	app.Commands = []cli.Command{
 		{
-		  Name:    "listen",
-		  Aliases: []string{"l"},
-		  Usage:   "Boot up the GPIO pin server.",
-		  Action:  func(c *cli.Context) error {
-			// fmt.Println("added task: ", c.Args().First())
-			server.Listen()
-			return nil
-		  },
+		    Name:    "listen",
+		    Aliases: []string{"l"},
+		    Usage:   "Boot up the GPIO pin server.",
+		    Action:  func(c *cli.Context) error {
+				fmt.Println("Server listening on port: ", port)
+				server.Listen(port)
+				return nil
+		    },
+		    Flags: []cli.Flag {
+			    cli.StringFlag{
+					Name: "port, p",
+					Value: "8000",
+					Usage: "Set the port for the server to listen on.",
+					Destination: &port,
+				},
+			},
 		},
 	}
 	app.Action = func(c *cli.Context) error {
-	fmt.Println("boom! I say!")
+	fmt.Println(port)
 	return nil
 	}
 
