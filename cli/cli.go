@@ -11,18 +11,10 @@ import (
 func Parse() {
 	// Flag
 	var port string
+	
 	app := cli.NewApp()
-	app.Name = "boom"
-	app.Usage = "make an explosive entrance"
-
-	// app.Flags = []cli.Flag {
-	// 	cli.StringFlag{
-	// 	  Name: "port, p",
-	// 	  Value: "8000",
-	// 	  Usage: "Set the port for the server to listen on.",
-	// 	  Destination: &port,
-	// 	},
-	// }
+	app.Name = "Raspberry Pi GPIO Api Server"
+	app.Usage = "Use HTTP Restful requests to manage your Raspberry Pi GPIO pins."
 
 	app.Commands = []cli.Command{
 		{
@@ -45,7 +37,7 @@ func Parse() {
 		},
 	}
 	app.Action = func(c *cli.Context) error {
-	fmt.Println(port)
+	fmt.Println("This is default.")
 	return nil
 	}
 
