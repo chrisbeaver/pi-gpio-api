@@ -12,8 +12,8 @@ import (
 func Listen(port string) {
 	r := mux.NewRouter()
     r.HandleFunc("/", IndexHandler).Methods("GET")
-    // r.HandleFunc("/products", ProductsHandler)
-	// r.HandleFunc("/articles", ArticlesHandler)
+    r.HandleFunc("/high", HighHandler).Methods("GET")
+	r.HandleFunc("/low", LowHandler).Methods("GET")
 	// cmd := fmt.Sprintf(":%d", port)
 	// fmt.Println(cmd)
     log.Fatal(http.ListenAndServe(":" + port, r))

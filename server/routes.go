@@ -1,13 +1,15 @@
 package server
 
 import (
-	// "encoding/json"
+	"encoding/json"
+	"strconv"
     // "log"
 	"net/http"
-	"time"
+	// "time"
 	"os"
 	"fmt"
 	// "io"
+	// "sort"
 	"github.com/stianeikeland/go-rpio"
 )
 
@@ -15,6 +17,10 @@ var (
 	// Use mcu pin 10, corresponds to physical pin 19 on the pi
 	pin = rpio.Pin(10)
 )
+type GPIOPin struct {
+	Name  string `json:"name"`
+	State int    `json:"state"`
+}
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	
@@ -22,10 +28,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	 
-	// In the future we could report back on the status of our DB, or our cache
-	// (e.g. Redis) by performing a simple PING, and include them in the response.
-	// io.WriteString(w, `{"alive": true}`)
-	// Open and map memory to access gpio, check for errors
 	if err := rpio.Open(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -33,16 +35,25 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Unmap gpio memory when done
 	defer rpio.Close()
-
-	// Set pin to output mode
-	pin.Output()
-
-	// Toggle pin 20 times
-	for x := 0; x < 20; x++ {
-		pin.Toggle()
-		time.Sleep(time.Second / 5)
+	
+	pins := make(map[int]GPIOPin)
+	for v := 0; v < 28; v++ {
+		pin := rpio.Pin(v)
+		pins[v] = GPIOPin{Name: "GPIO" + strconv.Itoa(v), State: int(pin.Read())}
 	}
+	jsonString, _ := json.Marshal(pins)
+	fmt.Fprintf(w, string(jsonString))
+	
 }
+
+func HighHandler(w http.ResponseWriter, r *http.Request) { 
+	for i, _ := range r.URL.Query() {
+		fmt.Fprintf(w, i+"\n")
+	}
+	// fmt.Printf("%+v\n", yourProject)
+}
+
+func LowHandler(w http.ResponseWriter, r *http.Request) { }
 
 
 
